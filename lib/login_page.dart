@@ -1,3 +1,4 @@
+import 'package:auto_search/OTP_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -132,9 +133,9 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: CupertinoColors.systemYellow,
                   ),
                   onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context){
-                    //   return OTPpage();
-                    // }));
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return OTPpage();
+                    }));
                   },
                   child: Text(
                     'Continue',
