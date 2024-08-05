@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                       child: Text(
                         "Let's get started",
-                        style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: screenHeight*0.0363, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -87,13 +87,13 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                       child: Text(
                         "Get there with a rickshaw flair!",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: screenHeight*0.017,),
                       ),
                     ),
                   ],
                 ), // Get there with rickshaw flair
 
-                SizedBox(height: screenHeight * 0.04), // Adjusted margin
+                SizedBox(height: screenHeight * 0.05), // Adjusted margin
 
                 Row(
                   children: [
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                       child: Text(
                         "Continue with Phone Number",
-                        style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: screenHeight*0.0195, fontWeight: FontWeight.w500),
                       ),
                     ),
                   ],
@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text(
                       'Continue',
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: TextStyle(fontSize: screenHeight*0.018, color: Colors.black),
                     ),
                   ),
                 ), // Continue Elevated Button
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Text(
                         '   Or   ',
-                        style: TextStyle(color: Colors.grey, fontSize: 18),
+                        style: TextStyle(color: Colors.grey, fontSize: screenHeight*0.018),
                       ),
                       Container(
                         height: 1,
@@ -178,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: screenHeight * 0.02), // Adjusted margin
 
                 Container(
-                  width: screenWidth * 0.75, // Responsive width
+                  width: screenWidth * 0.82, // Responsive width
                   height: screenHeight * 0.07, // Responsive height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -198,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(width: screenWidth * 0.03),
                         Text(
                           'Continue with Google',
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: screenHeight*0.018),
                         ),
                       ],
                     ),
@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: screenHeight * 0.02), // Adjusted margin
 
                 Container(
-                  width: screenWidth * 0.75, // Responsive width
+                  width: screenWidth * 0.82, // Responsive width
                   height: screenHeight * 0.07, // Responsive height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(width: screenWidth * 0.03),
                         Text(
                           'Continue with Apple',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(fontSize: screenHeight*0.018, color: Colors.white),
                         ),
                       ],
                     ),
@@ -247,12 +247,12 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(
                       'By verifying, you agree to our Terms of Service \n'
                           '                         and Privacy Policy',
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w400),
+                      style: TextStyle(color: Colors.grey,fontSize: screenHeight*0.014, fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.03),
+                SizedBox(height: screenHeight * 0.02),
                 // Terms and conditions
               ],
             ),

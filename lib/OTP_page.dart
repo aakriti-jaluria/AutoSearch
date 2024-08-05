@@ -62,31 +62,40 @@ class _OTPpageState extends State<OTPpage> {
                   ),
                 ],
               ),
+
               SizedBox(height: height * 0.02), // 2% of screen height
+
               Center(
                 child: Text(
                   'Enter OTP',
-                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: height*0.035, fontWeight: FontWeight.bold),
                 ),
               ),
+
               SizedBox(height: height * 0.01), // 1% of screen height
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: width * 0.1), // 10% of screen width
                 child: Text(
-                  'We have sent an OTP on your registered',
-                  style: TextStyle(fontSize: 17),
+                  'We have sent an OTP on your registered phone number',
+                  style: TextStyle(fontSize: height*0.016),
                   textAlign: TextAlign.center,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: width * 0.1), // 10% of screen width
-                child: Text(
-                  'phone number',
-                  style: TextStyle(fontSize: 17),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+
+
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: width * 0.1), // 10% of screen width
+              //   child: Text(
+              //     'phone number',
+              //     style: TextStyle(fontSize: height*0.017),
+              //     textAlign: TextAlign.center,
+              //   ),
+              // ),
+
+
               SizedBox(height: height * 0.02), // 2% of screen height
+
               Center(
                 child: Pinput(
                   length: 6,
@@ -108,18 +117,22 @@ class _OTPpageState extends State<OTPpage> {
                   },
                 ),
               ),
+
               SizedBox(height: height * 0.01), // 1% of screen height
+
               Padding(
-                padding: EdgeInsets.only(left: width * 0.57), // 65% of screen width
+                padding: EdgeInsets.only(left: width * 0.62), // 65% of screen width
                 child: TextButton(
                   onPressed: () {},
                   child: Text(
                     'Resend OTP?',
-                    style: TextStyle(fontSize: 16, color: Colors.blue),
+                    style: TextStyle(fontSize: height*0.016, color: Colors.blue),
                   ),
                 ),
               ),
+
               SizedBox(height: height * 0.02), // 2% of screen height
+
               Center(
                 child: Container(
                   height: height * 0.06, // 6% of screen height
@@ -131,21 +144,26 @@ class _OTPpageState extends State<OTPpage> {
                     onPressed: () {},
                     child: Text(
                       'Verify Phone Number',
-                      style: TextStyle(color: Colors.black, fontSize: 17),
+                      style: TextStyle(color: Colors.black, fontSize: height*0.017),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: height * 0.10), // 15% of screen height
+
+              SizedBox(height: height * 0.10),
+              // 15% of screen height
               Center(child: TextButton(
                   onPressed: (){},
                   child: Text('By verifying, you agree to our Terms of Service \n'
                       '                         and Privacy Policy',
-                    style: TextStyle(color: Colors.grey,fontWeight: FontWeight.w400),)),
+                    style: TextStyle(color: Colors.grey,fontSize: height*0.014,fontWeight: FontWeight.w400),)),
               ),
+
             ],
           ),
         ),
+
+
       ),
     );
   }
