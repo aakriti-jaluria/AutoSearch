@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pinput/pinput.dart';
+import 'dart:developer' as developer;
 
 class OTPpage extends StatefulWidget {
-  const OTPpage({super.key});
+
+  String otpfromloginpage="";
+  OTPpage(this.otpfromloginpage);
 
   @override
   State<OTPpage> createState() => _OTPpageState();
@@ -12,6 +16,7 @@ class OTPpage extends StatefulWidget {
 
 class _OTPpageState extends State<OTPpage> {
   var otp = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +120,7 @@ class _OTPpageState extends State<OTPpage> {
                       print(otp);
                     });
                   },
-                ),
-              ),
+                ),              ),
 
               SizedBox(height: height * 0.01), // 1% of screen height
 
@@ -141,7 +145,20 @@ class _OTPpageState extends State<OTPpage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: CupertinoColors.systemYellow,
                     ),
-                    onPressed: () {},
+                    onPressed: () async{
+                      try{
+                        PhoneAuthCredential credential = await PhoneAuthProvider.credential(
+                            verificationId: widget.otpfromloginpage,
+                            smsCode: otp);
+                        FirebaseAuth.instance.signInWithCredential(credential).then((value){
+                          // Navigator.push(context, MaterialPageRoute(builder: (context){
+                          //   return homepage();
+                          // }));
+                        });
+                      }catch(ex){
+                        developer.log(ex.toString());
+                      }
+                    },
                     child: Text(
                       'Verify Phone Number',
                       style: TextStyle(color: Colors.black, fontSize: height*0.017),

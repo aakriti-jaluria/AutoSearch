@@ -1,4 +1,6 @@
 import 'package:auto_search/OTP_page.dart';
+import 'package:auto_search/uihelper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -137,10 +139,18 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: CupertinoColors.systemYellow,
                     ),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return OTPpage();
-                      }));
+                    onPressed: () async{
+                      await FirebaseAuth.instance.verifyPhoneNumber(
+                          verificationCompleted: (PhoneAuthCredential credential){},
+                          verificationFailed: (FirebaseAuthException ex){},
+                          codeSent: (String verificationid, int? resendtoken){
+                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return OTPpage(verificationid);
+                            }));
+                          },
+                          codeAutoRetrievalTimeout: (String verificationid){},
+                          phoneNumber: completePhoneNumber);
+                         uihelper.customalertbox(context, 'OTP sent');
                     },
                     child: Text(
                       'Continue',
