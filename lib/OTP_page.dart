@@ -1,7 +1,7 @@
+import 'package:auto_search/maps_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:developer' as developer;
 
@@ -151,9 +151,9 @@ class _OTPpageState extends State<OTPpage> {
                             verificationId: widget.otpfromloginpage,
                             smsCode: otp);
                         FirebaseAuth.instance.signInWithCredential(credential).then((value){
-                          // Navigator.push(context, MaterialPageRoute(builder: (context){
-                          //   return homepage();
-                          // }));
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return MapScreen();
+                          }));
                         });
                       }catch(ex){
                         developer.log(ex.toString());
