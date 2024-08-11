@@ -1,10 +1,11 @@
+import 'package:auto_search/resources/google_maps_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:get_it/get_it.dart';
 
 
-import 'resources/google_maps_services.dart';
+import 'google_maps_services.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);

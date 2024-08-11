@@ -1,23 +1,24 @@
-
 import 'package:auto_search/login_page.dart';
-import 'package:auto_search/maps_screen.dart';
+import 'package:auto_search/resources/google_maps_services.dart';
 import 'package:firebase_core/firebase_core.dart';
+//import 'package:auto_try/google_maps_service.dart';
+//import 'package:auto_try/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'resources/google_maps_services.dart';
+import 'maps_screen.dart';
 
 // Setup locator
 void setuplocator() {
   GetIt.I.registerLazySingleton(() => GoogleMapsService());
 }
 
-void main() async {
+void main()async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   setuplocator();
-
   runApp(const MyApp());
 }
 
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
         useMaterial3: true,
       ),
-      home:MapScreen(),
+      home: const LoginPage(),
     );
   }
 }
