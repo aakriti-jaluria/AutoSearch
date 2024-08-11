@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.auto_search">
+    package="com.example.auto_project">
 
     <application
         android:label="auto_search"
@@ -34,7 +34,7 @@
             android:value="2" />
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAKCgNwGTDzwp2VzCChW1-ayDpNyORenLM"/>
+            android:value="AIzaSyAHvcuE2nS196smPJwyvq1k-o7j-BAcRdY"/>
 
     </application>
 
