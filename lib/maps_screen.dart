@@ -1,5 +1,6 @@
 import 'package:auto_search/resources/google_maps_services.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:get_it/get_it.dart';
@@ -19,6 +20,32 @@ class _MapScreenState extends State<MapScreen> {
   final GoogleMapsService _googleMapsService = GetIt.I<GoogleMapsService>();
   final LatLng _center = const LatLng(37.7749, -122.4194); // Default center location
 
+
+///////////////////////////////////////////////////////CURRENT LOCATION///////////////////////////////////////////////////////////
+late
+  Position currentPosition; //latituate and longitude we'll get
+ var geoLocator = Geolocator();
+
+
+  get newGoogleMapController => null;
+
+
+  
+ void locatePosition()async
+ {
+   Position position = await Geolocator.getCurrentPosition(desiredAccuracy : LocationAccuracy.high);
+   currentPosition= position;
+
+
+   LatLng latLatPosition = LatLng(position.latitude, position.longitude); //when we move , camera moves
+   
+   CameraPosition cameraPosition = new CameraPosition(target: latLatPosition, zoom : 14);
+   newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+
+
+ }
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +63,9 @@ class _MapScreenState extends State<MapScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+
+    //current position
+    locatePosition();
   }
 
   @override
@@ -45,12 +75,26 @@ class _MapScreenState extends State<MapScreen> {
         title: Text('Google Map'),
       ),
       body: GoogleMap(
+
+
         onMapCreated: _onMapCreated,
+
+
         initialCameraPosition: CameraPosition(
           target: _center,
           zoom: 11.0,
         ),
-        myLocationEnabled: true,
+
+        //blue icon, telling our current location
+        myLocationEnabled : true,
+        zoomGesturesEnabled: true,
+        zoomControlsEnabled: true,
+
+
+
+
+
+        //myLocationEnabled: true,
         myLocationButtonEnabled: true,
       ),
     );
