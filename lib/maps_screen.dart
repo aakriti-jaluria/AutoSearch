@@ -85,7 +85,7 @@ class _MapScreenState extends State<MapScreen> {
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
               target: _center,
-              zoom: 17.0,
+              zoom: 25.0,
             ),
             myLocationEnabled: true, // Blue icon, showing current location
             zoomGesturesEnabled: true,
