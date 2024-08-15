@@ -5,8 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:get_it/get_it.dart';
 
-
-import 'google_maps_services.dart';
+import 'Geocoding/geocoding_request.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -18,38 +17,47 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   final GoogleMapsService _googleMapsService = GetIt.I<GoogleMapsService>();
-  final LatLng _center = const LatLng(37.7749, -122.4194); // Default center location
+  LatLng _center = const LatLng(37.7749, -122.4194); // Default center location
 
+  ///////////////////////////////////////////////////////CURRENT LOCATION///////////////////////////////////////////////////////////
+  Position? currentPosition; // Nullable to check if the position is loaded
+  var geoLocator = Geolocator();
+  bool isLoading = true; // Control the progress indicator
 
-///////////////////////////////////////////////////////CURRENT LOCATION///////////////////////////////////////////////////////////
-late
-  Position currentPosition; //latituate and longitude we'll get
- var geoLocator = Geolocator();
+  get newGoogleMapController => mapController;
 
+  void locatePosition() async {
+    setState(() {
+      isLoading = true; // Start loading when location fetch starts
+    });
 
-  get newGoogleMapController => null;
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
 
+    LatLng latLatPosition = LatLng(position.latitude, position.longitude); // When we move, camera moves
 
-  
- void locatePosition()async
- {
-   Position position = await Geolocator.getCurrentPosition(desiredAccuracy : LocationAccuracy.high);
-   currentPosition= position;
+    CameraPosition cameraPosition = CameraPosition(target: latLatPosition, zoom: 17);
+    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
+    // Update center to the current position and stop loading
+    setState(() {
+      _center = latLatPosition;
+      isLoading = false; // Hide progress indicator once the location is fetched
+    });
 
-   LatLng latLatPosition = LatLng(position.latitude, position.longitude); //when we move , camera moves
-   
-   CameraPosition cameraPosition = new CameraPosition(target: latLatPosition, zoom : 14);
-   newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    // Fetch and print the address using reverse geocoding
 
+    String address = await GeocodingRequest.searchCoordinateAddress(position);
+    print('This is your current address: ' +address);
 
-
- }
+  }
 
   @override
   void initState() {
     super.initState();
     _checkPermissions();
+    // Fetch current location right when the widget is initialized
+    locatePosition();
   }
 
   void _checkPermissions() async {
@@ -63,9 +71,6 @@ late
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-
-    //current position
-    locatePosition();
   }
 
   @override
@@ -74,28 +79,24 @@ late
       appBar: AppBar(
         title: Text('Google Map'),
       ),
-      body: GoogleMap(
-
-
-        onMapCreated: _onMapCreated,
-
-
-        initialCameraPosition: CameraPosition(
-          target: _center,
-          zoom: 11.0,
-        ),
-
-        //blue icon, telling our current location
-        myLocationEnabled : true,
-        zoomGesturesEnabled: true,
-        zoomControlsEnabled: true,
-
-
-
-
-
-        //myLocationEnabled: true,
-        myLocationButtonEnabled: true,
+      body: Stack(
+        children: [
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 17.0,
+            ),
+            myLocationEnabled: true, // Blue icon, showing current location
+            zoomGesturesEnabled: true,
+            zoomControlsEnabled: true,
+            myLocationButtonEnabled: true,
+          ),
+          if (isLoading)
+            Center(
+              child: CircularProgressIndicator(), // Show loading indicator while fetching location
+            ),
+        ],
       ),
     );
   }
