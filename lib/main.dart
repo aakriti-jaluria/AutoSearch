@@ -1,6 +1,7 @@
 import 'package:auto_search/data_handler/app_data.dart';
 import 'package:auto_search/login_page.dart';
 import 'package:auto_search/resources/google_maps_services.dart';
+import 'package:auto_search/search_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import 'package:auto_try/google_maps_service.dart';
 //import 'package:auto_try/map_screen.dart';
