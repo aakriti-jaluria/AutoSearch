@@ -9,7 +9,7 @@ class AppData extends ChangeNotifier{
 
 
   /////////////////////////(ERROR)
- Address? pickUpLocation;
+ Address? pickUpLocation, dropOffLocation;
 
 
 
@@ -19,6 +19,14 @@ class AppData extends ChangeNotifier{
  void updatePickUpLocationAddress(Address userPickUpAddress)
  {
    pickUpLocation = userPickUpAddress;
+   notifyListeners(); // any changes by users will get broadcasted
+
+   // we'll update this in geocoding request
+ }
+
+ void updatedropOffLocationAddress(Address userdropOffAddress)
+ {
+   dropOffLocation = userdropOffAddress;
    notifyListeners(); // any changes by users will get broadcasted
 
    // we'll update this in geocoding request
