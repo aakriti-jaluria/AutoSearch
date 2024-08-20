@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_search/data_handler/app_data.dart';
 import 'package:auto_search/resources/google_maps_services.dart';
 import 'package:auto_search/search_screen.dart';
@@ -267,8 +269,12 @@ class _MapScreenState extends State<MapScreen> {
 
               child: GestureDetector(
 
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                onTap: ()async{
+                  var res = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+
+                  if(res == "Obtain Direction"){
+                    await getPlaceDirection();
+                  }
                 },
 
 
@@ -463,13 +469,62 @@ class _MapScreenState extends State<MapScreen> {
 
 
 
-
-
-
-
-
         ],
       ),
     );
   }
+
+  Future<void> getPlaceDirection() async {
+    var initialPos = Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var finalPos = Provider.of<AppData>(context, listen: false).dropOffLocation;
+
+    if (initialPos == null || finalPos == null) {
+      // Handle the null scenario appropriately (show an error message or return early)
+      print("Pickup or Dropoff location is not set");
+      return;
+    }
+
+    var pickupLatLng = LatLng(initialPos.latitude, initialPos.longitude);
+    var dropoffLatLng = LatLng(finalPos.latitude, finalPos.longitude);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  "Please Wait!",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    try {
+      var details = await GeocodingRequest.obtainPlaceDirectionDetails(pickupLatLng, dropoffLatLng);
+
+      Navigator.pop(context);
+
+      if (details != null) {
+        print("This is Encoded Points:");
+        print(details.encodedpoints);
+      } else {
+        print("Failed to retrieve direction details.");
+        // Show an error message or handle this scenario as needed
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print("An error occurred: $e");
+      // Handle or show the error as needed
+    }
+  }
+
 }

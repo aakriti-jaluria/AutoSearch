@@ -328,6 +328,7 @@ class PredictionTile extends StatelessWidget{
       print("This is drop off location :");
       print(st1);
 
+      Navigator.pop(context,"Obtain Direction");
     }
 
   }

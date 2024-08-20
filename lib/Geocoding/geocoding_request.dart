@@ -1,7 +1,10 @@
+import 'package:auto_search/Models/Direction_details.dart';
 import 'package:auto_search/Models/address.dart';
 import 'package:auto_search/data_handler/app_data.dart';
 import 'package:auto_search/httprequest.dart'; // Import the generalized HttpRequest class
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class GeocodingRequest {
@@ -60,4 +63,25 @@ class GeocodingRequest {
 
     return placeAddress;  // Ensure that a string is always returned
   }
+
+  static Future<DirectionDetails>obtainPlaceDirectionDetails(LatLng initialPosition, LatLng finalPosition) async{
+
+    String directionUrl = "https://maps.googleapis.com/maps/api/directions/json?destination=${finalPosition.latitude},${finalPosition.longitude}&origin=${initialPosition.latitude},${initialPosition.longitude}&key=AIzaSyDVHfnBiF57K1ZUqP2wImN5zE95Ue2ZALI";
+
+    var res = await HttpRequest.getRequest(directionUrl);
+
+    if(res=="Failed"){
+      throw Exception("Failed to fetch direction details");
+    }
+
+    DirectionDetails directionDetails = DirectionDetails(
+        res["routes"][0]["legs"][0]["distance"]["text"], //distancetext
+        res["routes"][0]["legs"][0]["duration"]["text"],  //durationtext
+        res["routes"][0]["legs"][0]["distance"]["value"],    //distancevalue
+        res["routes"][0]["legs"][0]["duration"]["value"],    //durationvalue
+        res["routes"][0]["overview_polyline"]["points"],);   //encodedpoints)
+
+        return directionDetails;
+  }
+
 }
