@@ -6,7 +6,11 @@ import 'package:auto_search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+<<<<<<< HEAD
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+=======
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+>>>>>>> new
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -56,6 +60,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //f
 
 
 
+
+
+List<LatLng> pLineCoordinates = [];
+Set<Polyline> polylineset= {};
+
+
+
+
+
   late GoogleMapController mapController;
   final GoogleMapsService _googleMapsService = GetIt.I<GoogleMapsService>();
   LatLng _center = const LatLng(37.7749, -122.4194); // Default center location
@@ -66,6 +79,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //f
   bool isLoading = true; // Control the progress indicator
 
   get newGoogleMapController => mapController;
+
+
+
+  Set<Marker> markersset = {};
+  Set<Circle> circlesset = {};
+
+
+
+
+
 
   void locatePosition() async {
     setState(() {
@@ -230,6 +253,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //f
             zoomGesturesEnabled: true,
             zoomControlsEnabled: true,
             myLocationButtonEnabled: true,
+            polylines: polylineset,
+            markers: markersset,
+            circles: circlesset,
           ),
           if (isLoading)
             Center(
@@ -713,6 +739,112 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //f
       if (details != null) {
         print("This is Encoded Points:");
         print(details.encodedpoints);
+
+
+
+
+
+
+
+        PolylinePoints polylinePoints = PolylinePoints();
+        List<PointLatLng> decodePolylinePointResult = polylinePoints.decodePolyline(details.encodedpoints);
+
+        pLineCoordinates.clear();
+
+        if(decodePolylinePointResult.isNotEmpty){
+          decodePolylinePointResult.forEach((PointLatLng pointLatLng){
+           pLineCoordinates.add(LatLng(pointLatLng.latitude,pointLatLng.longitude)) ;
+          });
+        }
+
+        polylineset.clear();
+
+        setState(() {
+          Polyline polyline = Polyline(
+              color: Colors.pink,
+              polylineId: PolylineId("PolylineID"),
+              jointType: JointType.round,
+              points: pLineCoordinates,
+              width: 2,
+              startCap: Cap.roundCap,
+              endCap: Cap.roundCap,
+              geodesic: true
+          );
+
+
+          polylineset.add(polyline);
+        });
+
+        LatLngBounds latlngbounds;
+        if(pickupLatLng.latitude > dropoffLatLng.latitude && pickupLatLng.longitude > dropoffLatLng.longitude){
+          latlngbounds = LatLngBounds(southwest: dropoffLatLng, northeast:pickupLatLng);
+        }
+
+        else if(pickupLatLng.longitude > dropoffLatLng.longitude){
+          latlngbounds = LatLngBounds(southwest: LatLng(pickupLatLng.latitude, dropoffLatLng.longitude), northeast:LatLng(dropoffLatLng.latitude, pickupLatLng.longitude));
+        }
+
+
+        else if(pickupLatLng.latitude > dropoffLatLng.latitude){
+          latlngbounds = LatLngBounds(southwest: LatLng(dropoffLatLng.latitude, pickupLatLng.longitude), northeast:LatLng(pickupLatLng.latitude, dropoffLatLng.longitude));
+        }
+        
+        else{
+          latlngbounds = LatLngBounds(southwest: pickupLatLng, northeast:dropoffLatLng);
+        }
+        
+        newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latlngbounds, 70));
+
+
+        Marker pickupLocMaker = Marker(
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: InfoWindow(title: initialPos.placeName, snippet: "My Location"),
+          position: pickupLatLng,
+          markerId: MarkerId("Pickupid"),
+        );
+
+        Marker dropoffLocMaker = Marker(
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          infoWindow: InfoWindow(title: finalPos.placeName, snippet: "Dropoff Location"),
+          position: dropoffLatLng,
+          markerId: MarkerId("Dropoffid"),
+        );
+
+        setState(() {
+          markersset.add(pickupLocMaker);
+          markersset.add(dropoffLocMaker);
+        });
+        
+        Circle pickupLocCircle = Circle(
+            fillColor: Colors.blue,
+            circleId: CircleId("Pickupid"),
+            center: pickupLatLng,
+            radius: 12,
+            strokeWidth: 4,
+            strokeColor: Colors.grey,
+
+        );
+
+        Circle dropoffLocCircle = Circle(
+          fillColor: Colors.blue,
+          circleId: CircleId("Dropoffid"),
+          center: dropoffLatLng,
+          radius: 12,
+          strokeWidth: 4,
+          strokeColor: Colors.grey,
+
+        );
+
+        setState(() {
+          circlesset.add(pickupLocCircle);
+          circlesset.add(dropoffLocCircle);
+        });
+
+        
+
+
+
+
       } else {
         print("Failed to retrieve direction details.");
         // Show an error message or handle this scenario as needed
@@ -722,6 +854,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //f
       print("An error occurred: $e");
       // Handle or show the error as needed
     }
+
+
   }
 
 }
