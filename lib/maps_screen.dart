@@ -6,6 +6,7 @@ import 'package:auto_search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,7 +23,31 @@ class MapScreen extends StatefulWidget {
   _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //for switching the screens
+{
+
+
+
+ /////////////////for switching the screens////////////////
+  double rideDetailsContainerHeight = 0;
+  double searchContainerHeight = 300.0;
+
+  void displayRiderContainer()async
+  {
+    await getPlaceDirection();
+
+    setState(() {
+
+      //go to search drop off container and set the height to search container height
+   searchContainerHeight=0;
+   rideDetailsContainerHeight = 300.0;
+   //bottomPaddingOfMap = 230.0;
+
+   // also apply animation , wrap the main container with animation
+
+    });
+  }
+
 
 
  ////// for gesture button ////////////
@@ -262,24 +287,244 @@ class _MapScreenState extends State<MapScreen> {
 
 
             //just to give base
-            child: Container(
-            height: screenHeight * 0.35,
-              color: Colors.white,
+            child: AnimatedSize(
+
+            //key : this,
+              curve: Curves.bounceIn,
+              duration: new Duration(milliseconds: 160),
+
+              child: Container(
+              height: searchContainerHeight,
+                color: Colors.white,
+              
+              
+                child: GestureDetector(
+              
+                  onTap: ()async{
+                    var res = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+              
+                    if(res == "Obtain Direction"){
 
 
-              child: GestureDetector(
 
-                onTap: ()async{
-                  var res = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                      // here we can directly call displayridedetailscontainer
 
-                  if(res == "Obtain Direction"){
-                    await getPlaceDirection();
-                  }
-                },
+                      //await getPlaceDirection();
+                      displayRiderContainer();
+                    }
+                  },
+              
+              
+                  child: Container(
+                    height: searchContainerHeight, // Responsive height based on screen height
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xffFFF4C9),
+                          Color(0xffFFFFE0).withOpacity(0.6),
+                        ],
+                        begin: FractionalOffset(0.5, 0.0),
+                        end: FractionalOffset(0.5, 1.0),
+                        stops: [0.4, 1.0],
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(18.0),
+                        topRight: Radius.circular(18.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black54,
+                          blurRadius: 15.0,
+                          spreadRadius: 0.2,
+                          offset: Offset(0.7, 0.7),
+                        )
+                      ],
+                    ),
+              
+              
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+              
+                        children: [
+              
+                          SizedBox(height: screenHeight*0.015),
+              
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Text(
+                              "Hi There",
+                              style: TextStyle(fontSize: screenHeight*0.016),
+                            ),
+                          ),
+              
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Text(
+                              "Where to?",
+                              style: TextStyle(fontSize: screenHeight*0.024, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+              
+                          SizedBox(height: screenHeight*0.015),
+              
+                          Center(
+                            child: Container(
+                              height: screenHeight*0.050,
+                              width: screenWidth * 0.9, // Responsive width based on screen width
+                              decoration: BoxDecoration(
+                                color: CupertinoColors.systemYellow.withOpacity(0.95),
+                                borderRadius: BorderRadius.circular(5.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 2.0,
+                                    spreadRadius: 0.05,
+                                    offset: Offset(0.7, 0.7),
+                                  )
+                                ],
+                              ),
+              
+              
+                              child: Row(
+                                children: [
+              
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Icon(
+                                      Icons.search,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text("Search Drop Off", style: TextStyle(fontSize: screenHeight*0.017),),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: screenHeight*0.020),
+              
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.home,
+                                  color: Colors.black54,
+                                ),
+                                SizedBox(width: screenWidth*0.035),
+              
+              
+              
+                                Flexible( ////////////////////column wraped with flexibble to wrap  the home address
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+              
+                                        //"Add Home", style: TextStyle(fontSize: screenHeight*0.017),
+              
+              
+                                        //we r doing changes in SEARCH DROP OFF ----- saving the HOME ADDRESS permanently in home column ----- visit map_screen
+                                        Provider.of<AppData>(context).pickUpLocation != null
+                                            ? Provider.of<AppData>(context).pickUpLocation!.placeName   ////(THIS ! IS ADDED - Use a Nullable Field: Change pickUpLocation to be nullable (Address?) and handle the null case when accessing it.)
+                                            : "Add Home",
+              
+                                        //style: TextStyle(fontSize: 15),
+              
+                                        // overflow: TextOverflow.clip,
+                                        // maxLines: null,
+                                        style: TextStyle(fontSize: screenHeight * 0.015, fontWeight: FontWeight.w400),
+                                        // overflow: TextOverflow.ellipsis, // Handle overflow gracefully
+                                        // maxLines: null, // Restrict to one line if necessary
+                                        // softWrap: false,
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+                                      ),
+              
+              
+                                      SizedBox(height: screenHeight*0.006),
+              
+              
+              
+                                      Text(
+                                        'Your living home address',
+                                        style: TextStyle(color: Colors.black54, fontSize: screenHeight*0.012),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+              
+                          SizedBox(height: screenHeight*0.020),
+              
+                          DividerWidget(),
+              
+                          SizedBox(height: screenHeight*0.020),
+              
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.work,
+                                  color: Colors.black54,
+                                ),
+                                SizedBox(width: screenWidth*0.035),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Add Work", style: TextStyle(fontSize: screenHeight*0.017),),
+              
+                                    SizedBox(height: screenHeight*0.006),
+              
+                                    Text(
+                                      'Your office address',
+                                      style: TextStyle(color: Colors.black54, fontSize: screenHeight*0.014),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
 
+
+
+          //SELECT RIDE
+          Positioned(
+
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+
+            child: AnimatedSize(
+
+              curve: Curves.bounceIn,
+              duration: new Duration(milliseconds: 160),
+
+              child: Container(
+                height: rideDetailsContainerHeight,
+                color: Colors.white,
 
                 child: Container(
-                  height: screenHeight * 0.35, // Responsive height based on screen height
+                  height: rideDetailsContainerHeight, // Responsive height based on screen height
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -304,167 +549,109 @@ class _MapScreenState extends State<MapScreen> {
                     ],
                   ),
 
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        //height: 16,
+                        color: CupertinoColors.systemYellow.withOpacity(0.4),
 
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
 
-                      children: [
-
-                        SizedBox(height: screenHeight*0.015),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Text(
-                            "Hi There",
-                            style: TextStyle(fontSize: screenHeight*0.016),
-                          ),
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Text(
-                            "Where to?",
-                            style: TextStyle(fontSize: screenHeight*0.024, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-
-                        SizedBox(height: screenHeight*0.015),
-
-                        Center(
-                          child: Container(
-                            height: screenHeight*0.050,
-                            width: screenWidth * 0.9, // Responsive width based on screen width
-                            decoration: BoxDecoration(
-                              color: CupertinoColors.systemYellow.withOpacity(0.95),
-                              borderRadius: BorderRadius.circular(5.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 2.0,
-                                  spreadRadius: 0.05,
-                                  offset: Offset(0.7, 0.7),
-                                )
-                              ],
-                            ),
-
-
-                            child: Row(
-                              children: [
-
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: Icon(
-                                    Icons.search,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text("Search Drop Off", style: TextStyle(fontSize: screenHeight*0.017),),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight*0.020),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Row(
                             children: [
-                              Icon(
-                                Icons.home,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(width: screenWidth*0.035),
 
-
-
-                              Flexible( ////////////////////column wraped with flexibble to wrap  the home address
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-
-                                      //"Add Home", style: TextStyle(fontSize: screenHeight*0.017),
-
-
-                                      //we r doing changes in SEARCH DROP OFF ----- saving the HOME ADDRESS permanently in home column ----- visit map_screen
-                                      Provider.of<AppData>(context).pickUpLocation != null
-                                          ? Provider.of<AppData>(context).pickUpLocation!.placeName   ////(THIS ! IS ADDED - Use a Nullable Field: Change pickUpLocation to be nullable (Address?) and handle the null case when accessing it.)
-                                          : "Add Home",
-
-                                      //style: TextStyle(fontSize: 15),
-
-                                      // overflow: TextOverflow.clip,
-                                      // maxLines: null,
-                                      style: TextStyle(fontSize: screenHeight * 0.015, fontWeight: FontWeight.w400),
-                                      // overflow: TextOverflow.ellipsis, // Handle overflow gracefully
-                                      // maxLines: null, // Restrict to one line if necessary
-                                      // softWrap: false,
-
-
-
-
-
-
-
-
-
-
-                                    ),
-
-
-                                    SizedBox(height: screenHeight*0.006),
-
-
-
-                                    Text(
-                                      'Your living home address',
-                                      style: TextStyle(color: Colors.black54, fontSize: screenHeight*0.012),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: screenHeight*0.020),
-
-                        DividerWidget(),
-
-                        SizedBox(height: screenHeight*0.020),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.work,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(width: screenWidth*0.035),
+                              Image.asset('assets/images/auto2.png', height: screenHeight*0.13,),
+                              SizedBox(width: screenWidth*0.095,),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Add Work", style: TextStyle(fontSize: screenHeight*0.017),),
-
-                                  SizedBox(height: screenHeight*0.006),
 
                                   Text(
-                                    'Your office address',
-                                    style: TextStyle(color: Colors.black54, fontSize: screenHeight*0.014),
+                                    "Book an Auto",
+                                    style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500),
                                   ),
+
+                                  Text(
+                                    "10Km",
+                                    style: TextStyle(fontSize: screenHeight*0.016, fontWeight: FontWeight.w400),
+                                  ),
+
                                 ],
-                              ),
+                              )
+
                             ],
                           ),
                         ),
-                      ],
-                    ),
+
+
+                      ),
+
+                      SizedBox(height: screenHeight*0.02,),
+
+                      Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+
+                          FaIcon(FontAwesomeIcons.moneyCheckAlt),
+                          SizedBox(width: screenWidth*0.04 ,),
+                          Text(
+                            "Cash",
+                            style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500),
+                          ),
+
+                          SizedBox(width: screenWidth*0.01,),
+
+                          Icon(Icons.keyboard_arrow_down, color: Colors.black54,size: screenHeight*0.02,),
+
+                        ],
+                      ),
+                      ),
+
+                      SizedBox(height: screenHeight*0.025,),
+
+
+                      Container(
+                        width: screenWidth*0.8,
+                        height: screenHeight*0.09,
+                        child: ElevatedButton(onPressed: (){},
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)
+                              ),
+                              backgroundColor: CupertinoColors.systemYellow.withOpacity(0.75),
+                            ),
+                            child: Row(
+                                                    children: [
+
+                            SizedBox(width: screenWidth*0.03,),
+
+                            Text(
+                              "Request",
+                              style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500, color: Colors.black54),
+                            ),
+
+                            SizedBox(width: screenWidth*0.37,),
+
+                            FaIcon(FontAwesomeIcons.automobile, color: Colors.black54,),
+
+
+
+                                                    ],
+                                                  )),
+                      )
+
+                    ],
                   ),
+
                 ),
+
+
               ),
             ),
+
           ),
 
 
@@ -473,6 +660,16 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
   }
+
+
+
+
+
+
+
+
+
+
 
   Future<void> getPlaceDirection() async {
     var initialPos = Provider.of<AppData>(context, listen: false).pickUpLocation;
