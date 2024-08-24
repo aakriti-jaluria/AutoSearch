@@ -6,11 +6,8 @@ import 'package:auto_search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-<<<<<<< HEAD
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-=======
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
->>>>>>> new
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
