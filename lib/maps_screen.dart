@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_search/data_handler/app_data.dart';
 import 'package:auto_search/resources/google_maps_services.dart';
 import 'package:auto_search/search_screen.dart';
@@ -31,22 +33,47 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin //f
 
  /////////////////for switching the screens////////////////
   double rideDetailsContainerHeight = 0;
-  double searchContainerHeight = 300.0;
+  double requestRideContainerHeight = 0;
+  double searchContainerHeight = 300.0; ///////yahan nhi hui media query apply
 
-  void displayRiderContainer()async
+//// display ride details container /////
+  void displayRideDetailsContainer()async
   {
     await getPlaceDirection();
 
     setState(() {
 
+      double screenHeight = MediaQuery.of(context).size.height;
+
       //go to search drop off container and set the height to search container height
-   searchContainerHeight=0;
-   rideDetailsContainerHeight = 300.0;
+   searchContainerHeight=0; //SEARCH DROP OFF
+   rideDetailsContainerHeight = screenHeight*0.4;   //SELECT RIDE
    //bottomPaddingOfMap = 230.0;
 
    // also apply animation , wrap the main container with animation
 
     });
+  }
+
+
+  /////display rider request container ////we will call this in onpressed of request button
+  void displayRequestRideContainer()async{
+    await getPlaceDirection();
+
+    setState(() {
+
+      double screenHeight = MediaQuery.of(context).size.height;
+
+
+      rideDetailsContainerHeight = 0;//SELECT RIDE
+      requestRideContainerHeight=screenHeight*0.4;
+      //bottomPaddingOfMap = 230.0;
+
+      // also apply animation , wrap the main container with animation
+
+      });
+
+
   }
 
 
@@ -152,7 +179,7 @@ Set<Polyline> polylineset= {};
       ),
 
 
-      //navigation drawer
+/////////////////////////////////////////////////////////////////////////NAVIGATION DRAWER///////////////////////////////////////////////////////////////////////////////////////////
       drawer: Container(
         color: Colors.white,
         width: screenWidth*0.7,
@@ -237,9 +264,7 @@ Set<Polyline> polylineset= {};
 
 
 
-
-
-          //GOOGLE MAP
+/////////////////////////////////////////////////////////////////////////////GOOGLE MAP///////////////////////////////////////////////////////////////////////
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
@@ -262,7 +287,7 @@ Set<Polyline> polylineset= {};
 
 
 
-          //hamburger button
+/////////////////////////////////////////////////////////////////////////////HAMBURGER BUTTON///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           Positioned(
             top: 35,
             left: 22,
@@ -302,7 +327,7 @@ Set<Polyline> polylineset= {};
 
 
 
-          //SEARCH DROP OFF
+/////////////////////////////////////////////////////////////////////////////SEARCH DROP OFF//////////////////////////////////////////////////////////////////////////////
           Positioned(
             left: 0.0,
             right: 0.0,
@@ -333,7 +358,7 @@ Set<Polyline> polylineset= {};
                       // here we can directly call displayridedetailscontainer
 
                       //await getPlaceDirection();
-                      displayRiderContainer();
+                      displayRideDetailsContainer();
                     }
                   },
               
@@ -506,13 +531,13 @@ Set<Polyline> polylineset= {};
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Add Work", style: TextStyle(fontSize: screenHeight*0.017),),
+                                    Text("Add Work", style: TextStyle(fontSize: screenHeight*0.015),),
               
                                     SizedBox(height: screenHeight*0.006),
               
                                     Text(
                                       'Your office address',
-                                      style: TextStyle(color: Colors.black54, fontSize: screenHeight*0.014),
+                                      style: TextStyle(color: Colors.black54, fontSize: screenHeight*0.012),
                                     ),
                                   ],
                                 ),
@@ -530,156 +555,283 @@ Set<Polyline> polylineset= {};
 
 
 
-          //SELECT RIDE
+///////////////////////////////////////////////////////////////////////////////SELECT RIDE  - ride details///////////////////////////////////////////////////////////////////////////////
           Positioned(
 
             bottom: 0.0,
             left: 0.0,
             right: 0.0,
 
-            child: AnimatedSize(
-
-              curve: Curves.bounceIn,
-              duration: new Duration(milliseconds: 160),
+            child: Container(
+              height: rideDetailsContainerHeight,
+              color: Colors.white,
 
               child: Container(
-                height: rideDetailsContainerHeight,
-                color: Colors.white,
-
-                child: Container(
-                  height: rideDetailsContainerHeight, // Responsive height based on screen height
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xffFFF4C9),
-                        Color(0xffFFFFE0).withOpacity(0.6),
-                      ],
-                      begin: FractionalOffset(0.5, 0.0),
-                      end: FractionalOffset(0.5, 1.0),
-                      stops: [0.4, 1.0],
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(18.0),
-                      topRight: Radius.circular(18.0),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 15.0,
-                        spreadRadius: 0.2,
-                        offset: Offset(0.7, 0.7),
-                      )
+                height: rideDetailsContainerHeight, // Responsive height based on screen height
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xffFFF4C9),
+                      Color(0xffFFFFE0).withOpacity(0.6),
                     ],
+                    begin: FractionalOffset(0.5, 0.0),
+                    end: FractionalOffset(0.5, 1.0),
+                    stops: [0.4, 1.0],
                   ),
-
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        //height: 16,
-                        color: CupertinoColors.systemYellow.withOpacity(0.4),
-
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-
-                          child: Row(
-                            children: [
-
-                              Image.asset('assets/images/auto2.png', height: screenHeight*0.13,),
-                              SizedBox(width: screenWidth*0.095,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  Text(
-                                    "Book an Auto",
-                                    style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500),
-                                  ),
-
-                                  Text(
-                                    "10Km",
-                                    style: TextStyle(fontSize: screenHeight*0.016, fontWeight: FontWeight.w400),
-                                  ),
-
-                                ],
-                              )
-
-                            ],
-                          ),
-                        ),
-
-
-                      ),
-
-                      SizedBox(height: screenHeight*0.02,),
-
-                      Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-
-                          FaIcon(FontAwesomeIcons.moneyCheckAlt),
-                          SizedBox(width: screenWidth*0.04 ,),
-                          Text(
-                            "Cash",
-                            style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500),
-                          ),
-
-                          SizedBox(width: screenWidth*0.01,),
-
-                          Icon(Icons.keyboard_arrow_down, color: Colors.black54,size: screenHeight*0.02,),
-
-                        ],
-                      ),
-                      ),
-
-                      SizedBox(height: screenHeight*0.025,),
-
-
-                      Container(
-                        width: screenWidth*0.8,
-                        height: screenHeight*0.09,
-                        child: ElevatedButton(onPressed: (){},
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)
-                              ),
-                              backgroundColor: CupertinoColors.systemYellow.withOpacity(0.75),
-                            ),
-                            child: Row(
-                                                    children: [
-
-                            SizedBox(width: screenWidth*0.03,),
-
-                            Text(
-                              "Request",
-                              style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500, color: Colors.black54),
-                            ),
-
-                            SizedBox(width: screenWidth*0.37,),
-
-                            FaIcon(FontAwesomeIcons.automobile, color: Colors.black54,),
-
-
-
-                                                    ],
-                                                  )),
-                      )
-
-                    ],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(18.0),
+                    topRight: Radius.circular(18.0),
                   ),
-
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 15.0,
+                      spreadRadius: 0.2,
+                      offset: Offset(0.7, 0.7),
+                    )
+                  ],
                 ),
 
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      //height: 16,
+                      color: CupertinoColors.systemYellow.withOpacity(0.4),
+
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+
+                        child: Row(
+                          children: [
+
+                            Image.asset('assets/images/auto2.png', height: screenHeight*0.13,),
+                            SizedBox(width: screenWidth*0.095,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                Text(
+                                  "Book an Auto",
+                                  style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500),
+                                ),
+
+                                Text(
+                                  "10Km",
+                                  style: TextStyle(fontSize: screenHeight*0.016, fontWeight: FontWeight.w400),
+                                ),
+
+                              ],
+                            )
+
+                          ],
+                        ),
+                      ),
+
+
+                    ),
+
+                    SizedBox(height: screenHeight*0.02,),
+
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+
+                        FaIcon(FontAwesomeIcons.moneyCheckAlt),
+                        SizedBox(width: screenWidth*0.04 ,),
+                        Text(
+                          "Cash",
+                          style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500),
+                        ),
+
+                        SizedBox(width: screenWidth*0.01,),
+
+                        Icon(Icons.keyboard_arrow_down, color: Colors.black54,size: screenHeight*0.02,),
+
+                      ],
+                    ),
+                    ),
+
+                    SizedBox(height: screenHeight*0.035,),
+
+
+                    Container(
+                      width: screenWidth*0.8,
+                      height: screenHeight*0.09,
+                      child: ElevatedButton(onPressed: (){
+
+                        displayRequestRideContainer();
+
+                      },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)
+                            ),
+                            backgroundColor: CupertinoColors.systemYellow.withOpacity(0.75),
+                          ),
+                          child: Row(
+                                                  children: [
+
+                          SizedBox(width: screenWidth*0.03,),
+
+                          Text(
+                            "Request",
+                            style: TextStyle(fontSize: screenHeight*0.022, fontWeight: FontWeight.w500, color: Colors.black54),
+                          ),
+
+                          SizedBox(width: screenWidth*0.3,),
+
+                          FaIcon(FontAwesomeIcons.automobile, color: Colors.black54,),
+
+
+
+                                                  ],
+                                                )),
+                    )
+
+                  ],
+                ),
 
               ),
+
+
             ),
 
           ),
 
 
 
-        ],
+/////////////////////////////////////////////////////////////////////////////REQUESTING A RIDE////////////////////////////////////////////////////////////////////////////
+            Positioned(
+              bottom: 0.0,
+              left: 0.0,
+              right: 0.0,
+
+              child: AnimatedSize(
+
+                curve: Curves.bounceIn,
+                duration: new Duration(milliseconds: 160),
+
+                child: Container(
+                height: requestRideContainerHeight,
+                color: Colors.white,
+
+                child: Container(
+                height: requestRideContainerHeight, // Responsive height based on screen height
+                decoration: BoxDecoration(
+                gradient: LinearGradient(
+                colors: [
+                Color(0xffFFF4C9),
+                Color(0xffFFFFE0).withOpacity(0.6),
+                ],
+                begin: FractionalOffset(0.5, 0.0),
+                end: FractionalOffset(0.5, 1.0),
+                stops: [0.4, 1.0],
+                ),
+                borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(18.0),
+                topRight: Radius.circular(18.0),
+                    ),
+                    boxShadow: [
+                    BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 15.0,
+                    spreadRadius: 0.2,
+                    offset: Offset(0.7, 0.7),
+                    )
+                    ],
+                    ),
+
+                  child: Column(
+                    children: [
+                      SizedBox(height: screenHeight*0.05,),
+
+
+
+                      ////////////////////////ANIMATED TEXTTTTTT <3 ////////////////////////////////////
+
+                         SizedBox(
+                           width: screenWidth,
+                           child: ColorizeAnimatedTextKit(
+
+                 onTap: (){
+                   print('Tap Event');
+                 },
+
+                   text: [
+
+                     'Requesting a Ride...',
+                     'Please Wait...',
+                     'Finding a Driver...',
+                     'Requesting a Ride...',
+                     'Please Wait...',
+                     'Finding a Driver...',
+                     'Requesting a Ride...',
+                     'Please Wait...',
+                     'Finding a Driver...',
+
+
+                   ],
+
+                   textStyle: TextStyle(
+                     fontSize: screenHeight*0.03,
+                     fontWeight: FontWeight.bold,
+                     //fontFamily:
+                   ),
+
+                   colors: [
+
+                     Colors.black,
+                     Colors.black38,
+                     //CupertinoColors.systemYellow,
+
+                   ],
+
+                 textAlign: TextAlign.center,
+
+
+
+                           ),
+                         ),
+
+
+
+                 SizedBox(height: screenHeight*0.050,),
+
+                 Container(
+                   height: screenHeight*0.08,
+                   width: screenWidth*0.17,
+
+                   decoration: BoxDecoration(
+                     color: CupertinoColors.systemYellow,
+                     borderRadius: BorderRadius.circular(26.0),
+                     border: Border.all(width: 2, color: Colors.black38),
+                   ),
+
+                   child: Icon(Icons.close, size: screenHeight*0.03,),
+                 ),
+
+
+                      SizedBox(height: screenHeight*0.02,),
+
+                      Text("Cancel Ride", style: TextStyle(fontSize: screenHeight*0.02),)
+
+
+
+
+
+
+                    ],
+                  ),
+                    )
+
+
+
+
+                ),
+              ),
+            ),],
       ),
     );
   }
@@ -693,7 +845,7 @@ Set<Polyline> polylineset= {};
 
 
 
-
+//GET PLACE DIRECTION
   Future<void> getPlaceDirection() async {
     var initialPos = Provider.of<AppData>(context, listen: false).pickUpLocation;
     var finalPos = Provider.of<AppData>(context, listen: false).dropOffLocation;
